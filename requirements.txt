@@ -1,0 +1,11 @@
+Django>=5.0,<6.0
+psycopg2>=2.9.7
+python-dotenv
+djangorestframework>=3.14
+Pillow
+celery
+redis
+python-decouple
+python-jose[cryptography]
+django-cors-headers
+psycopg2-binary
