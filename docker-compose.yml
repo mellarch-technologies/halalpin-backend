@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   db:
     image: postgis/postgis:15-3.3
@@ -7,21 +6,27 @@ services:
       POSTGRES_USER: halalpin
       POSTGRES_PASSWORD: supersecret
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - dbdata:/var/lib/postgresql/data
+
   backend:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn halalpin.wsgi:application --bind 0.0.0.0:8000
     ports:
-      - '8000:8000'
+      - "8000:8000"
     environment:
-      - DEBUG=1
-      - DJANGO_SETTINGS_MODULE=halalpin.settings
-      - DATABASE_URL=postgres://halalpin:supersecret@db:5432/halalpin_db
+      DJANGO_SETTINGS_MODULE: halalpin.settings
+      DEBUG: "1"
+      POSTGRES_DB: halalpin_db
+      POSTGRES_USER: halalpin
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
     depends_on:
       - db
+
 volumes:
   dbdata:
